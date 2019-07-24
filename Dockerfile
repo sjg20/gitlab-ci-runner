@@ -2,7 +2,7 @@
 # This Dockerfile is used to build an image containing basic stuff to be used
 # to build U-Boot and run our test suites.
 
-FROM ubuntu:xenial-20190222
+FROM ubuntu:xenial-20190720
 MAINTAINER Tom Rini <trini@konsulko.com>
 LABEL Description=" This image is for building U-Boot inside a container"
 
@@ -57,6 +57,7 @@ RUN apt-get update && apt-get install -y \
 	libssl-dev \
 	libudev-dev \
 	libusb-1.0-0-dev \
+	lzma-alone \
 	lzop \
 	picocom \
 	python \
