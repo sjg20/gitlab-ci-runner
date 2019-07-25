@@ -66,6 +66,7 @@ RUN apt-get update && apt-get install -y \
 	python-pip \
 	python-pytest \
 	python-virtualenv \
+	python3-sphinx \
 	rpm2cpio \
 	sloccount \
 	sparse \
