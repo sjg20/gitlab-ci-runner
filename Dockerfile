@@ -31,8 +31,10 @@ RUN wget -O - https://github.com/foss-xtensa/toolchain/releases/download/2018.02
 RUN wget -O - https://github.com/foss-for-synopsys-dwc-arc-processors/toolchain/releases/download/arc-2018.09-release/arc_gnu_2018.09_prebuilt_uclibc_le_archs_linux_install.tar.gz | tar -C /opt -xz
 RUN wget -O - https://github.com/vincentzwc/prebuilt-nds32-toolchain/releases/download/20180521/nds32le-linux-glibc-v3-upstream.tar.gz | tar -C /opt -xz
 
-# Updat and install things from apt now
+# Update and install things from apt now
 RUN apt-get update && apt-get install -y \
+	automake \
+	autopoint \
 	bc \
 	bison \
 	build-essential \
@@ -76,6 +78,41 @@ RUN apt-get update && apt-get install -y \
 	virtualenv \
 	zip \
 	&& rm -rf /var/lib/apt/lists/*
+
+# Build GRUB UEFI targets grubarm.efi and grubaa64.efi
+RUN git clone git://git.savannah.gnu.org/grub.git /tmp/grub && \
+	cd /tmp/grub && \
+	git checkout grub-2.04 && \
+	./bootstrap && \
+	mkdir -p /opt/grub && \
+	./configure --target=aarch64 --with-platform=efi \
+	CC=gcc \
+	TARGET_CC=/opt/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-gcc \
+	TARGET_OBJCOPY=/opt/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-objcopy \
+	TARGET_STRIP=/opt/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-strip \
+	TARGET_NM=/opt/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-nm \
+	TARGET_RANLIB=/opt/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-ranlib && \
+	make && \
+	./grub-mkimage -O arm64-efi -o /opt/grub/grubaa64.efi --prefix= -d \
+	grub-core cat chain configfile echo efinet ext2 fat halt help linux \
+	lsefisystab loadenv lvm minicmd normal part_msdos part_gpt reboot \
+	search search_fs_file search_fs_uuid search_label serial sleep test \
+	true && \
+	make clean && \
+	./configure --target=arm --with-platform=efi \
+	CC=gcc \
+	TARGET_CC=/opt/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-gcc \
+	TARGET_OBJCOPY=/opt/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-objcopy \
+	TARGET_STRIP=/opt/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-strip \
+	TARGET_NM=/opt/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-nm \
+	TARGET_RANLIB=/opt/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-ranlib && \
+	make && \
+	./grub-mkimage -O arm-efi -o /opt/grub/grubarm.efi --prefix= -d \
+	grub-core cat chain configfile echo efinet ext2 fat halt help linux \
+	lsefisystab loadenv lvm minicmd normal part_msdos part_gpt reboot \
+	search search_fs_file search_fs_uuid search_label serial sleep test \
+	true && \
+	rm -rf /tmp/grub
 
 RUN git clone git://git.qemu.org/qemu.git /tmp/qemu && \
 	cd /tmp/qemu && \
