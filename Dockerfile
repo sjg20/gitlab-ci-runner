@@ -118,7 +118,7 @@ RUN git clone git://git.qemu.org/qemu.git /tmp/qemu && \
 	cd /tmp/qemu && \
 	git submodule update --init dtc && \
 	git checkout 506179e42112be77bfd071f050b15762d3b2cd43 && \
-	./configure --prefix=/opt/qemu --target-list="aarch64-softmmu,arm-softmmu,i386-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,ppc-softmmu,x86_64-softmmu,xtensa-softmmu" && \
+	./configure --prefix=/opt/qemu --target-list="aarch64-softmmu,arm-softmmu,i386-softmmu,mips-softmmu,mips64-softmmu,mips64el-softmmu,mipsel-softmmu,ppc-softmmu,riscv64-softmmu,x86_64-softmmu,xtensa-softmmu" && \
 	make -j$(nproc) all install && \
 	rm -rf /tmp/qemu
 
