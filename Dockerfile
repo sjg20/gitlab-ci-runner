@@ -112,6 +112,20 @@ RUN git clone git://git.savannah.gnu.org/grub.git /tmp/grub && \
 	lsefisystab loadenv lvm minicmd normal part_msdos part_gpt reboot \
 	search search_fs_file search_fs_uuid search_label serial sleep test \
 	true && \
+	make clean && \
+	./configure --target=riscv64 --with-platform=efi \
+	CC=gcc \
+	TARGET_CC=/opt/gcc-7.3.0-nolibc/riscv64-linux/bin/riscv64-linux-gcc \
+	TARGET_OBJCOPY=/opt/gcc-7.3.0-nolibc/riscv64-linux/bin/riscv64-linux-objcopy \
+	TARGET_STRIP=/opt/gcc-7.3.0-nolibc/riscv64-linux/bin/riscv64-linux-strip \
+	TARGET_NM=/opt/gcc-7.3.0-nolibc/riscv64-linux/bin/riscv64-linux-nm \
+	TARGET_RANLIB=/opt/gcc-7.3.0-nolibc/riscv64-linux/bin/riscv64-linux-ranlib && \
+	make && \
+	./grub-mkimage -O riscv64-efi -o /opt/grub/grubriscv64.efi --prefix= -d \
+	grub-core cat chain configfile echo efinet ext2 fat halt help linux \
+	lsefisystab loadenv lvm minicmd normal part_msdos part_gpt reboot \
+	search search_fs_file search_fs_uuid search_label serial sleep test \
+	true && \
 	rm -rf /tmp/grub
 
 RUN git clone git://git.qemu.org/qemu.git /tmp/qemu && \
