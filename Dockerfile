@@ -136,6 +136,11 @@ RUN git clone git://git.qemu.org/qemu.git /tmp/qemu && \
 	make -j$(nproc) all install && \
 	rm -rf /tmp/qemu
 
+# Create our user/group
+RUN echo uboot ALL=NOPASSWD: ALL > /etc/sudoers.d/uboot
+RUN useradd -m -U uboot
+USER uboot:uboot
+
 # Create the buildman config file
 RUN /bin/echo -e "[toolchain]\nroot = /usr" > ~/.buildman
 RUN /bin/echo -e "kernelorg = /opt/gcc-7.3.0-nolibc/*" >> ~/.buildman
