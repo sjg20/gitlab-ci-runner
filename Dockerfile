@@ -2,7 +2,7 @@
 # This Dockerfile is used to build an image containing basic stuff to be used
 # to build U-Boot and run our test suites.
 
-FROM ubuntu:xenial-20190720
+FROM ubuntu:bionic-20190912.1
 MAINTAINER Tom Rini <trini@konsulko.com>
 LABEL Description=" This image is for building U-Boot inside a container"
 
@@ -10,9 +10,9 @@ LABEL Description=" This image is for building U-Boot inside a container"
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Add LLVM repository
-RUN apt-get update && apt-get install -y wget xz-utils && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gnupg2 wget xz-utils && rm -rf /var/lib/apt/lists/*
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN echo deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main | tee /etc/apt/sources.list.d/llvm.list
+RUN echo deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-7 main | tee /etc/apt/sources.list.d/llvm.list
 
 # Manually install the kernel.org "Crosstool" based toolchains for gcc-7.3
 RUN wget -O - https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/7.3.0/x86_64-gcc-7.3.0-nolibc_aarch64-linux.tar.xz | tar -C /opt -xJ
@@ -52,6 +52,7 @@ RUN apt-get update && apt-get install -y \
 	grub-efi-ia32-bin \
 	iasl \
 	iputils-ping \
+	libisl15 \
 	liblz4-tool \
 	libpixman-1-dev \
 	libpython-dev \
@@ -63,10 +64,8 @@ RUN apt-get update && apt-get install -y \
 	lzop \
 	picocom \
 	python \
-	python-coverage \
 	python-dev \
 	python-pip \
-	python-pytest \
 	python-virtualenv \
 	python3-sphinx \
 	rpm2cpio \
@@ -78,6 +77,9 @@ RUN apt-get update && apt-get install -y \
 	virtualenv \
 	zip \
 	&& rm -rf /var/lib/apt/lists/*
+
+# Manually install libmpfr4 for the toolchains
+RUN wget http://mirrors.kernel.org/ubuntu/pool/main/m/mpfr4/libmpfr4_3.1.4-1_amd64.deb && dpkg -i libmpfr4_3.1.4-1_amd64.deb && rm libmpfr4_3.1.4-1_amd64.deb
 
 # Build GRUB UEFI targets grubarm.efi and grubaa64.efi
 RUN git clone git://git.savannah.gnu.org/grub.git /tmp/grub && \
