@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y \
 	bison \
 	build-essential \
 	clang-7 \
+	coreutils \
 	cpio \
 	cppcheck \
 	curl \
@@ -62,7 +63,11 @@ RUN apt-get update && apt-get install -y \
 	libusb-1.0-0-dev \
 	lzma-alone \
 	lzop \
+	mount \
+	mtools \
+	openssl \
 	picocom \
+	parted \
 	python \
 	python-dev \
 	python-pip \
@@ -70,17 +75,22 @@ RUN apt-get update && apt-get install -y \
 	python3-pip \
 	python3-sphinx \
 	rpm2cpio \
+	sbsigntool \
 	sloccount \
 	sparse \
 	srecord \
 	sudo \
 	swig \
+	util-linux \
 	virtualenv \
 	zip \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Manually install libmpfr4 for the toolchains
 RUN wget http://mirrors.kernel.org/ubuntu/pool/main/m/mpfr4/libmpfr4_3.1.4-1_amd64.deb && dpkg -i libmpfr4_3.1.4-1_amd64.deb && rm libmpfr4_3.1.4-1_amd64.deb
+
+# Manually install a new enough version of efitools (must be v1.5.2 or later)
+RUN wget http://mirrors.kernel.org/ubuntu/pool/universe/e/efitools/efitools_1.8.1-0ubuntu2_amd64.deb && sudo dpkg -i efitools_1.8.1-0ubuntu2_amd64.deb && rm efitools_1.8.1-0ubuntu2_amd64.deb
 
 # Build GRUB UEFI targets grubarm.efi and grubaa64.efi
 RUN git clone git://git.savannah.gnu.org/grub.git /tmp/grub && \
