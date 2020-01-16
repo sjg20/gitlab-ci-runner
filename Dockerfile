@@ -49,6 +49,7 @@ RUN apt-get update && apt-get install -y \
 	flex \
 	gdisk \
 	git \
+	graphviz \
 	grub-efi-amd64-bin \
 	grub-efi-ia32-bin \
 	iasl \
