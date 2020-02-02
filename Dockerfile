@@ -59,6 +59,7 @@ RUN apt-get update && apt-get install -y \
 	libpixman-1-dev \
 	libpython-dev \
 	libsdl1.2-dev \
+	libsdl2-dev \
 	libssl-dev \
 	libudev-dev \
 	libusb-1.0-0-dev \
